@@ -1,0 +1,41 @@
+typedef long long ll;
+    ll mod=1e12+7;
+    ll p =1299827;
+    long long modadd(long long a, long long b) {
+	return (a % mod + b % mod + 2 * mod) % mod;
+}
+long long modmult(long long a, long long b) {
+	return (a % mod * b % mod) % mod;
+}
+    bool check(vector<vector<int>>&paths,ll mid){
+        set<ll>s;
+        unordered_map<ll,ll>mp;
+        for(int i=0;i<paths.size();i++){
+            s.clear();
+            ll curr=0;
+            ll pow=1;
+            for(int j=0;j<mid;j++){
+                curr=modmult(curr,p);
+                ll add=modmult(paths[i][j],p);
+                curr=modadd(curr,add);
+                    pow=modmult(pow,p);
+            }
+            s.insert(curr);
+            for(int j=mid;j<paths[i].size();j++){
+                ll rem=modmult(paths[i][j-mid],pow);
+                curr=modadd(curr,-rem);
+                curr=modmult(curr,p);
+                ll add=modmult(paths[i][j],p);
+                curr=modadd(curr,add);
+                s.insert(curr);
+            }
+            for(auto it:s){
+                mp[it]++;
+                if(mp[it]==paths.size()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+//rolling hash for a particular length to check if that length is valid ie this length subarray/substring is common in all strings or arrays if giving WA try changing the value of p and mod 
